@@ -1,0 +1,3 @@
+GENERAL DESCRIPTION
+--------------------
+The application simulates the basic function of a bank.The program generates 2 different types of threads, a number MAXCLIENTS of clients and MAXDESKS of servants. There are 3 main areas of memory, i) the qLenght controlled by qMutex ii) messageQueu control by dMutex[] and cond[] and the iii) accounts controlled by rw_lock.

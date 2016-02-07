@@ -1,0 +1,39 @@
+GENERAL DESCRIPTION
+--------------------
+The application simulates the basic function of a bank.The program generates 2 different types of threads, a number MAXCLIENTS of clients and MAXDESKS of servants. There are 3 main areas of memory, i) the qLenght controlled by qMutex ii) messageQueu control by dMutex[] and cond[] and the iii) accounts controlled by rw_lock.
+
+The clients choose in which queue are going to wait by accessing the qLenght vector through acquision of the qMutex. They get the number of the desk and increment the number of clients in the queue. After that, they can deliver one command to the messageQueue to be processed by servants. Because both need to write to the messageQueue, a qMutex[] vector defines one qMutex for each of the available desks. Therefore clients assigned to a queue will have to compete with other clients assigned to the same queue and the servant working in the queue to have access to the particular message queue. In order to synchronize their way of work, servants wait until clients have delivered one message to the queue through a vector of conditions cond[]. Clients broadcast everytime they deliver one message.
+
+Servants that get messages from the queue, decode the quantities and accounts involved and update the respective accounts that the clients have open in the bank. (Number of accounts equals number of clients and are initialized at 0). Access control of accounts is through file LOCKS.
+
+When the bank opens, clients are required to write their commands on the keyboard one after the other. Clients can check the status of all accounts, ask for the actual balance of all desks and only execute one command, in this order. When all clients have delivered all messages, the bank closes. Regarding balance collection, the client creates a barrier that includes all servants and itself, this way enables synchronization. Balance is collected in the shared memory vector balance[][].
+
+USER INSTRUCTIONS
+--------------------
+Program has its own Makefile that compiles and links all libraries and main program with FLAGS -Wall -pedantic -pthread
+Main function is found in : main.c
+Libraries are: global_header.c clientslib.c servantslib.c genlib.c
+Log file is written in: log.txt
+Executable program is called myprogram
+
+When the bank opens, one by one, clients request to the user through stdout what command or consult shall be executed.
+
+Clients can check the status of all accounts (consult), ask for the actual balance of all desks (consult) and after that only execute one command, in this order. (In case command is executed first, the following client takes control) Typing the following: 
+
+AVAILABLE CONSULTS:
+i) Type 0 to exit the client session
+ii) Type 1 to require balance from all desks
+iii) Type 2 to display accounts
+
+EXAMPLE OF AVAILABLE COMMANDS:
+"l 1": give balance of account 1
+"w 1 123": withdraw 123 euros from account 1
+"t 1 2 123": transfer 123 euros from account 1 to account 2
+"d 1 234": deposit 234 euros to account 1
+
+Example of execution: ./myprogram (no arguments required)
+
+Cheers!
+
+
+
